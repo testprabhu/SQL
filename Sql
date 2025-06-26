@@ -1,0 +1,197 @@
+Where
+------
+select email from customer where first_name = 'Nancy' AND last_name = 'Thomas';
+select description from film where title = 'Outlaw Hanky'
+select phone from address where address='259 Ipoh Drive'
+
+Count
+-----
+select count(distinct(district)) from address
+
+Order BY
+---------
+select * from customer order by first_name ASC
+select store_id, first_name, last_name from customer order by store_id, first_name DESC
+
+Limit
+------
+select title, length from film order by length asc limit 5
+
+Between
+--------
+ISO 8601 data format
+select * from payment where amount between 8 and 9
+select count(*) from payment where amount not between 8 and 9
+select * from payment where payment_date between '2007-02-01' and '2007-02-15'
+select count(*) from film where rating='R' and replacement_cost between 5 and 15
+
+IN
+---
+select * from payment where amount in (1.99, 2.99)
+select * from customer where first_name in ('John','Jake')
+
+LIKE
+-----
+% Matches Sequence
+_ Matches single character
+Case sensitive
+select * from customer where first_name like '%ja%'
+select * from customer where first_name like '%Ja%'
+select count(*) from actor where first_name like 'P%'
+select count(*) from film where title like '%Truman%'
+
+ILIKE
+------
+Not case sensitive
+select * from customer where first_name ilike '%ja%'
+
+Check RegEX
+Check Aggregate Functions - Can be done only on select or having clause
+
+Avg(), Count(), Max(), Min(), Sum(), Round()
+
+select MIN(replacement_cost) from film
+select MAX(replacement_cost) from film
+select MIN(replacement_cost) as Minimum_Cost, MAX(replacement_cost) as Maximum_Cost from film
+select avg(replacement_cost) from film
+select Round(avg(replacement_cost),2) from film
+select sum(replacement_cost) from film
+
+Group By
+---------
+Group by should come after from or where statement
+select customer_id from payment group by customer_id order by customer_id
+select customer_id, sum(amount) from payment group by customer_id order by customer_id
+select customer_id, sum(amount) from payment group by customer_id order by  sum(amount) desc
+select customer_id, staff_id, sum(amount) from payment group by staff_id, customer_id order by customer_id
+select DATE(payment_date), sum(amount) from payment group by DATE(payment_date) order by sum(amount) desc
+select staff_id, count(*) from payment group by staff_id
+
+
+Date
+-----
+select DATE(payment_date) from payment
+
+Having 
+------
+Having comes after group by
+select customer_id, sum(amount) from payment group by customer_id having sum(amount) > 100
+select store_id, count(customer_id) from customer group by store_id having count(customer_id) > 300
+
+AS
+---
+Alias for Column 
+It executed at the end of the query (only on select)
+select count(amount) as Total_Amount from payment
+select customer_id, sum(amount) as total_spent from payment group by customer_id
+select customer_id, sum(amount) as total_spent from payment group by customer_id having sum(amount) > 100
+
+Inner Joins
+------------
+Match in both tables
+select * from payment inner join customer on payment.customer_id = customer.customer_id
+select payment_id, payment.customer_id, first_name from payment inner join customer on payment.customer_id = customer.customer_id
+select district, email from address inner join customer on address.address_id = customer.address_id where address.district = 'California'
+select * from actor inner join film_actor on actor.actor_id = film_actor.actor_id inner join film on film_actor.film_id = film.film_id where first_name='Nick'
+
+Full Outer Joins
+-----------------
+Everything
+select * from customer full outer join payment on customer.customer_id = payment.customer_id 
+select * from customer full outer join payment on customer.customer_id = payment.customer_id where customer.customer_id is null or payment.payment_id is null
+
+Left Outer Join
+----------------
+Everything from Left table and Matching values from right
+Where is null give thins match only in Left table
+select film.film_id, title, inventory_id, store_id from film left join inventory on inventory.film_id = film.film_id
+select film.film_id, title, inventory_id, store_id from film left join inventory on inventory.film_id = film.film_id where inventory.film_id is null
+
+Right Join
+-----------
+Everything from Right table and Matching values from left
+Where is null give thins match only in Right table
+
+Union
+------
+combining two or more select statements
+
+Timestamps and Extract
+------------------------
+Time
+Date
+Timestamp
+Timestampz - with timezone
+
+show timezone
+select now()- timestamp with timezone
+select Timeofday() - String timestamp with timezone
+select Current_time
+select current_date
+
+
+Extract information from Time base
+Extract() - Year, month, day, week, quarter
+select extract(YEAR from payment_date) as my_year from payment
+
+
+Age()
+select age(payment_date) as how_old from payment
+
+
+To_char() - Convert data type to text
+select to_char(payment_date,'DD Mon YYYY') as how_old from payment
+select to_char(payment_date,'MONTH-YY') as how_old from payment
+
+
+Math functions
+------------------
+Check Math functions (Random, Math functions, Operators)
+select rental_rate/replacement_cost from film
+select round(rental_rate/replacement_cost,2)*100 from film
+
+
+String functions and operators
+-------------------------------
+select length(first_name) from customer
+select first_name ||' ' || last_name from customer	
+select left(first_name,1) || last_name || '@gmail.com' from customer
+
+Sub-Query
+-----------
+Exits
+select title, rental_rate from film where rental_rate > (select avg(rental_rate) from film)
+select 	film_id, title from film where film_id in(select inventory.film_id from rental inner join inventory on inventory.inventory_id = rental.inventory_id where return_date between '2005-05-29' AND '2005-05-30') Order by film_id
+
+select first_name, last_name from customer AS c where exists (select * from payment as p where p.customer_id = c.customer_id and amount > 11)
+
+Self-Join
+-----------
+different alias to same table for join
+select f1.title, f2.title, f1.length from film as f1 inner join film as f2 on f1.film_id != f2.film_id and f1.length = f2.length
+
+DataTypes
+----------
+Boolean
+Character
+Numeric ( Int, Float)
+Temporal (date, time)
+UUID
+Array
+JSON
+Hstore Key-Value pair
+special type like network address, geometric data
+Serial
+
+Primary Key and Foreign Key
+----------------------------
+Constrains
+-------------
+Not Null
+Unique
+Check 
+References
+Exclusion
+
+
+
