@@ -193,5 +193,118 @@ Check
 References
 Exclusion
 
+Create
+--------
+Create table depts (
+first_name VARCHAR (50),
+department VARCHAR (50))
+
+Insert
+---------
+insert into depts (
+first_name,
+department
+)
+Values
+('Saravana','IT'),
+('Prabhu', 'Sales'),
+('Asokan','Sales')
+
+
+Update
+-------
+
+Delete
+--------
+
+Alter
+-------
+
+Drop
+-----
+
+Check
+-------
+
+CASE
+-----
+Similar to If Else
+
+select customer_id, 
+case 
+when (customer_id <=100) then 'Premium' 
+when (customer_id between 100 and 200) then 'Plus' 
+Else  'Normal'
+END as customer_class 
+from customer
+
+Equality
+select customer_id, 
+case customer_id
+	When 2 then 'Winner'
+	when 5 then 'second place'
+	else 'normal'
+END as customer_class 
+from customer
+
+
+select 
+sum(case rental_rate
+when 0.99 then 1
+else 0
+end
+) as number_of_bargains
+sum(case rental_rate
+when 2.99 then 1
+else 0
+end
+) as regular
+from film
+
+COALESCE
+---------
+unlimited argument will return only the null
+select COALESE(null, 2, 3) - result 2
+
+
+NULLIF
+-------
+Takes two input and return null if both are equal or return first input
+select (
+sum(Case when department  = 'Sales' then 1 else 0 end)/
+nullif (sum(Case when department  = 'IT' then 1 else 0 end),0)
+) as department_ration 
+from depts
+
+CAST
+-----
+one data type to another (available in PostgreSQL)
+select cast('5' As Integer) as new_int_str
+select char_length(cast(inventory_id as VARCHAR)) from rental
+
+Views
+------
+database object that is of a stored query. (Virtual table)
+Create View cust_info as
+select first_name, last_name, address from customer 
+inner join address
+on customer.address_id = address.address_id
+
+select * from cust_info
+
+Create or replace View cust_info as
+select first_name, last_name, address, district from customer 
+inner join address
+on customer.address_id = address.address_id
+
+drop view if exists cust_info
+
+alter view cust_info rename to customer_info
+
+
+Import and Export
+------------------
+
+
 
 
